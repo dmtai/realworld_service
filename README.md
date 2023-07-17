@@ -1,22 +1,35 @@
-# pg_service_template
+# ![RealWorld Example App](media/logo.png)
 
-Template of a C++ service that uses [userver framework](https://github.com/userver-framework/userver) with PostgreSQL.
+This codebase was created to demonstrate a fully fledged backend application built with **[userver framework](https://userver.tech/)** and **[PostgreSQL](https://www.postgresql.org/)** including CRUD operations, authentication, routing, pagination, and more.
 
+For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
-## Download and Build
+## Build and run
+The DB will be prepared and started and the service will be started on http://localhost:8080.
+### Docker-compose
+```
+# Clone submodules
+git submodule update --init
 
-To create your own userver-based service follow the following steps:
-
-1. Press the green "Use this template button" at the top of this github page
-2. Clone the service `git clone your-service-repo && cd your-service-repo`
-3. Give a propper name to your service and replace all the occurences of "pg_service_template" string with that name
-   (could be done via `find . -not -path "./third_party/*" -not -path ".git/*" -not -path './build_*' -type f | xargs sed -i 's/pg_service_template/YOUR_SERVICE_NAME/g'`).
-4. Feel free to tweak, adjust or fully rewrite the source code of your service.
-
+# Run service
+make docker-start-service-release
+```
+### Local
+```
+make service-start-release
+```
+## Tests
+Run unit and functional tests in docker or local.
+### Docker-compose
+```
+make docker-test-release
+```
+### Local
+```
+make test-release
+```
 
 ## Makefile
-
-Makefile contains typicaly useful targets for development:
 
 * `make build-debug` - debug build of the service with all the assertions and sanitizers enabled
 * `make build-release` - release build of the service with LTO
@@ -33,15 +46,8 @@ Makefile contains typicaly useful targets for development:
 * `make docker-COMMAND` - run `make COMMAND` in docker environment
 * `make docker-build-debug` - debug build of the service with all the assertions and sanitizers enabled in docker environment
 * `make docker-test-debug` - does a `make build-debug` and runs all the tests on the result in docker environment
+* `make docker-build-release` - release build of the service with all the assertions and sanitizers enabled in docker environment
+* `make docker-test-release` - does a `make build-release` and runs all the tests on the result in docker environment
 * `make docker-start-service-release` - does a `make install-release` and runs service in docker environment
 * `make docker-start-service-debug` - does a `make install-debug` and runs service in docker environment
 * `make docker-clean-data` - stop docker containers and clean database data
-
-Edit `Makefile.local` to change the default configuration and build options.
-
-
-## License
-
-The original template is distributed under the [Apache-2.0 License](https://github.com/userver-framework/userver/blob/develop/LICENSE)
-and [CLA](https://github.com/userver-framework/userver/blob/develop/CONTRIBUTING.md). Services based on the template may change
-the license and CLA.

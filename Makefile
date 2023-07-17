@@ -32,20 +32,19 @@ cmake-debug cmake-release: cmake-%: build_%/Makefile
 # Build using cmake
 .PHONY: build-debug build-release
 build-debug build-release: build-%: cmake-%
-	@cmake --build build_$* -j $(NPROCS) --target pg_service_template
+	@cmake --build build_$* -j $(NPROCS) --target realworld_service
 
 # Test
 .PHONY: test-debug test-release
 test-debug test-release: test-%: build-%
-	@cmake --build build_$* -j $(NPROCS) --target pg_service_template_unittest
-	@cmake --build build_$* -j $(NPROCS) --target pg_service_template_benchmark
+	@cmake --build build_$* -j $(NPROCS) --target realworld_service_unittest
 	@cd build_$* && ((test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V)
 	@pep8 tests
 
 # Start the service (via testsuite service runner)
 .PHONY: service-start-debug service-start-release
 service-start-debug service-start-release: service-start-%: build-%
-	@cd ./build_$* && $(MAKE) start-pg_service_template
+	@cd ./build_$* && $(MAKE) start-realworld_service
 
 # Cleanup data
 .PHONY: clean-debug clean-release
@@ -63,7 +62,7 @@ dist-clean:
 .PHONY: install-debug install-release
 install-debug install-release: install-%: build-%
 	@cd build_$* && \
-		cmake --install . -v --component pg_service_template
+		cmake --install . -v --component realworld_service
 
 .PHONY: install
 install: install-release
@@ -76,20 +75,19 @@ format:
 
 # Internal hidden targets that are used only in docker environment
 --in-docker-start-debug --in-docker-start-release: --in-docker-start-%: install-%
-	@sed -i 's/config_vars.yaml/config_vars.docker.yaml/g' /home/user/.local/etc/pg_service_template/static_config.yaml
-	@psql 'postgresql://user:password@service-postgres:5432/pg_service_template_db-1' -f ./postgresql/data/initial_data.sql
-	@/home/user/.local/bin/pg_service_template \
-		--config /home/user/.local/etc/pg_service_template/static_config.yaml
+	@sed -i 's/config_vars.yaml/config_vars.docker.yaml/g' /home/user/.local/etc/realworld_service/static_config.yaml
+	@/home/user/.local/bin/realworld_service \
+		--config /home/user/.local/etc/realworld_service/static_config.yaml
 
 # Build and run service in docker environment
 .PHONY: docker-start-service-debug docker-start-service-release
 docker-start-service-debug docker-start-service-release: docker-start-service-%:
-	@docker-compose run -p 8080:8080 --rm pg_service_template-container $(MAKE) -- --in-docker-start-$*
+	@docker-compose run -p 8080:8080 --rm realworld_service-container $(MAKE) -- --in-docker-start-$*
 
 # Start targets makefile in docker environment
 .PHONY: docker-cmake-debug docker-build-debug docker-test-debug docker-clean-debug docker-install-debug docker-cmake-release docker-build-release docker-test-release docker-clean-release docker-install-release
 docker-cmake-debug docker-build-debug docker-test-debug docker-clean-debug docker-install-debug docker-cmake-release docker-build-release docker-test-release docker-clean-release docker-install-release: docker-%:
-	docker-compose run --rm pg_service_template-container $(MAKE) $*
+	docker-compose run --rm realworld_service-container $(MAKE) $*
 
 # Stop docker container and remove PG data
 .PHONY: docker-clean-data

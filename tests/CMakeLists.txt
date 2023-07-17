@@ -8,12 +8,13 @@ else()
 endif()
 
 userver_testsuite_add(
-  SERVICE_TARGET pg_service_template
+  SERVICE_TARGET realworld_service
   REQUIREMENTS ${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   PYTEST_ARGS
   --service-config=${CMAKE_SOURCE_DIR}/configs/static_config.yaml
-  --service-binary=${CMAKE_BINARY_DIR}/pg_service_template
+  --service-binary=${CMAKE_BINARY_DIR}/realworld_service
   --config-fallback=${CMAKE_SOURCE_DIR}/configs/dynamic_config_fallback.json
+  --service-secdist=${CMAKE_SOURCE_DIR}/configs/jwt_config.json
   ${PYTEST_ARGS_CONFIG_VARS}
 )
