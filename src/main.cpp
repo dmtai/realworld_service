@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
   userver::server::handlers::auth::RegisterAuthCheckerFactory(
       "bearer", std::make_unique<handlers::auth::CheckerFactory>());
 
-  auto component_list =
+  const auto component_list =
       userver::components::MinimalServerComponentList()
           .Append<userver::server::handlers::Ping>()
           .Append<userver::components::TestsuiteSupport>()

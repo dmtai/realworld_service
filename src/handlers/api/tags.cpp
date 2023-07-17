@@ -26,7 +26,7 @@ userver::formats::json::Value Handler::HandleRequestJsonThrow(
     const userver::server::http::HttpRequest&,
     const userver::formats::json::Value&,
     userver::server::request::RequestContext&) const {
-  auto res =
+  const auto res =
       cluster_->Execute(userver::storages::postgres::ClusterHostType::kSlave,
                         db::sql::kGetTags.data());
   const auto tags = res.AsSetOf<std::string>();
